@@ -4,3 +4,4 @@ Welcome! [Head to our Wiki page](https://github.com/StanfordCS194/win2023-team6/
 
 Names:
 - Wilmer Zuna
+- Alahji Barry
