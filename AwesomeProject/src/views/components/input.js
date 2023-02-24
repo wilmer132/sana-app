@@ -70,6 +70,8 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         borderWidth: 0.5,
         alignItems: 'center',
+        paddingHorizontal: 20,
+        borderRadius: 8
     }
 });
 
