@@ -1,8 +1,5 @@
 import React from "react";
-<<<<<<< Updated upstream
-=======
 import { Alert } from "react-native";
->>>>>>> Stashed changes
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-navigation";
@@ -33,7 +30,6 @@ const Signup = ({ navigation }) => {
         }
         if (!inputs.fullname) {
             handleError('Please input fullname', 'fullname');
-
         }
         if (!inputs.phone) {
             handleError('Please input phone', 'phone');
@@ -62,11 +58,7 @@ const Signup = ({ navigation }) => {
             try {
                 setLoading(false);
                 AsyncStorage.setItem('userData', JSON.stringify(inputs));
-<<<<<<< Updated upstream
-                navigation.navigate('LoginScreen');
-=======
                 navigation.navigate('Login');
->>>>>>> Stashed changes
             } catch (error) {
                 Alert.alert('Error', 'Something went wrong');
             }
@@ -79,12 +71,8 @@ const Signup = ({ navigation }) => {
                 <ScrollView
                     contentContainerStyle={{
                         paddingTop: 50,
-<<<<<<< Updated upstream
-                        paddingHorizontal: 20
-=======
                         paddingHorizontal: 20,
                         paddingBottom: 200
->>>>>>> Stashed changes
                     }}>
                     <Text style={{ color: COLORS.black, fontSize: 40, fontWeight: 'bold' }}>
                         Signup
@@ -133,14 +121,9 @@ const Signup = ({ navigation }) => {
                             password
                         />
                         <Button title="Signup" onPress={validate} />
-<<<<<<< Updated upstream
-                        <Text onPress={() => navigation.navigate('LoginScreen')}
-                            style={{ color: COLORS.black, textAlign: "center", fontSize: 16, fontWeight: 'bold' }}>Already have an account? Login</Text>
-=======
                         <Text style={{ color: COLORS.darkBlue, textAlign: "center", fontSize: 16, fontWeight: 'bold' }}>Already have an account? </Text>
                         <Text onPress={() => navigation.replace('Login')}
                             style={{ color: COLORS.blue, textAlign: "center", fontSize: 16, fontWeight: 'bold' }}>Login</Text>
->>>>>>> Stashed changes
                     </View>
                 </ScrollView>
             </SafeAreaView>
