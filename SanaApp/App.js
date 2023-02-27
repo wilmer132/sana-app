@@ -11,7 +11,8 @@ export default function App() {
       {/*TODO: Views must be conditional on user input.
          For now, comment out `RecordMood` or other
          component present and add yours for testing. */}
-      <HomeScreen />
+      {/* <HomeScreen /> */}
+      <RecordMood />
       <NavBar /> 
     </View>
   );
