@@ -6,7 +6,7 @@ const navStyle = StyleSheet.create({
     height: '12%',
     width: '100%',
     borderStyle: 'solid',
-    backgroundColor: 'purple',
+    backgroundColor: '#3950A1',
   }
 });
 
