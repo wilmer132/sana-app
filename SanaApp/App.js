@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import NavBar from './components/NavBar/NavBar.js';
 import RecordMood from './components/RecordMood/RecordMood';
+import HomeScreen from './components/HomeScreen/HomeScreen.js';
 
 export default function App() {
   return (
@@ -10,7 +11,7 @@ export default function App() {
       {/*TODO: Views must be conditional on user input.
          For now, comment out `RecordMood` or other
          component present and add yours for testing. */}
-      <RecordMood />
+      <HomeScreen />
       <NavBar /> 
     </View>
   );
