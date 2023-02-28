@@ -1,8 +1,9 @@
 import { StyleSheet, Button, Text, View } from 'react-native';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import CheckBox from 'expo-checkbox';
 import * as FileSystem from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
+import { WebSQLDatabase } from 'expo-sqlite';
 // import uuid from 'react-native-uuid';
 // import { Asset } from 'expo-asset';
 
@@ -19,11 +20,11 @@ const styles = StyleSheet.create({
   },
   textPrompt: {
     marginBottom: 10,
-    fontSize: '25',
+    fontSize: 25,
     fontWeight: 'bold',
   },
   text: {
-    fontSize: '20',
+    fontSize: 20,
   },
   moodChoice: {
     width: '60%',
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-async function openDatabase(pathToDatabaseFile) {
+async function openDatabase(): Promise<SQLite.WebSQLDatabase> {
   if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'SQLite')).exists) {
     await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite');
   }
@@ -44,51 +45,66 @@ async function openDatabase(pathToDatabaseFile) {
   // );
   const db = SQLite.openDatabase('sana.db');
 
-  /* Check if moods table exists. Otherwise, create it. */
-  db.transaction(tx => {
-    tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS moods \
-      (id INTEGER PRIMARY KEY AUTOINCREMENT,\
-       userID INT,\
-       date STRING,\
-       moods STRING)'
-    )
-  });
-
   return db;
 }
 
-const db = openDatabase('');
+const db = openDatabase();
 
-function moodHandler(isCheckedHappy, isCheckedSad, isCheckedAngry) {
-  var userMoods= [];
+function moodHandler(isCheckedHappy: boolean, isCheckedSad: boolean,
+  isCheckedAngry: boolean) {
+  var userMoods: string[] = [];
   if (isCheckedHappy) userMoods.push("happy");
   if (isCheckedSad) userMoods.push("sad");
   if (isCheckedAngry) userMoods.push("angry");
-  var userEntry = {
+  var userEntry: any = {
     // id: uuid.v1(),
     userID: '0', // TODO: using fake userID. Update later. 
     date: Date.now(),
     moods: userMoods,
   };
   console.log('Moods Entry:\n' + JSON.stringify(userEntry));
-  console.log('Attempting to insert into db...\n');
-  db.transaction(tx => {
-    console.log("Made it into the transaction!");
-    tx.executeSql(
-      'INSERT INTO moods (userID, date, moods) values (?, ?, ?)',
-      [userEntry.userID, userEntry.date, userEntry.moods],
-      (txObj, resultSet) => console.log("Updated moods table: " + txObj + resultSet),
-      (txObj, error) => console.log('moodHandler Error', error)
-    )
+  db.then((wdb: WebSQLDatabase) => {
+    wdb.transaction(tx => {
+      tx.executeSql(
+        'INSERT INTO moods (userID, date, moods) values (?, ?, ?)',
+        [userEntry.userID, userEntry.date, userEntry.moods]
+      );
+    });
+  });
+  db.then((wbd: WebSQLDatabase) => {
+    wbd.transaction(tx => {
+      tx.executeSql(
+        'SELECT * from moods',
+        [],
+        (tx, result) => {
+          console.log("Current db: ", tx, result);
+        }
+      )
+    })
   });
 }
 
 export default function RecordMood() {
-  {/* Hard-coded feelings for first iteration. */}
+  /* Hard-coded feelings for first iteration. */
   const [isCheckedHappy, setCheckedHappy] = useState(false)
   const [isCheckedSad, setCheckedSad] = useState(false)
   const [isCheckedAngry, setCheckedAngry] = useState(false)
+
+  /* Check if moods table exists. Otherwise, create it. */
+  useEffect(() => {
+    db.then((wdb: WebSQLDatabase) => {
+      wdb.transaction(tx => {
+        tx.executeSql(
+          "CREATE TABLE IF NOT EXISTS moods\
+           (id INTEGER PRIMARY KEY NOT NULL,\
+           userID INT,\
+           date TEXT,\
+           moods TEXT);"
+        );
+      });
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.innerView}>
@@ -130,4 +146,4 @@ export default function RecordMood() {
       /> : undefined}
     </View> 
   );
-}
+};
