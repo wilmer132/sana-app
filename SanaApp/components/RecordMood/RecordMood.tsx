@@ -31,6 +31,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  recordButtonView: {
+    marginTop: 20,
+    backgroundColor: 'purple'
+  },
 });
 
 async function openDatabase(): Promise<SQLite.WebSQLDatabase> {
@@ -44,6 +48,13 @@ async function openDatabase(): Promise<SQLite.WebSQLDatabase> {
   //   FileSystem.documentDirectory + 'SQLite/mood.db'
   // );
   const db = SQLite.openDatabase('sana.db');
+
+  /* Temporary: Clear/truncate data from table moods to start afresh. */
+  db.transaction(tx => {
+    tx.executeSql(
+      'DELETE FROM moods'
+    );
+  });
 
   return db;
 }
@@ -77,7 +88,7 @@ function moodHandler(isCheckedHappy: boolean, isCheckedSad: boolean,
         'SELECT * from moods',
         [],
         (tx, result) => {
-          console.log("Current db: ", tx, result);
+          console.log("Current db:\n", result.rows);
         }
       )
     })
@@ -138,12 +149,16 @@ export default function RecordMood() {
           <Text>&nbsp;&nbsp;</Text>
           <Text style={styles.text}>Angry</Text>
         </View>
+        {(isCheckedHappy || isCheckedSad || isCheckedAngry) ?
+          <View style={styles.recordButtonView}>
+            <Button
+            color={'white'}
+            title="Record Mood"
+            onPress={ () => moodHandler(isCheckedHappy, isCheckedSad, isCheckedAngry)}
+            />
+          </View>:
+        null}
       </View>
-      {(isCheckedHappy || isCheckedSad || isCheckedAngry) ?
-      <Button
-        title="Record Mood"
-        onPress={ () => moodHandler(isCheckedHappy, isCheckedSad, isCheckedAngry)}
-      /> : undefined}
     </View> 
   );
 };
