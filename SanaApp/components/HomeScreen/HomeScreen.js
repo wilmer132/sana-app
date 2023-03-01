@@ -2,7 +2,7 @@ import { StyleSheet, ScrollView, SafeAreaView, Button, Text, View } from 'react-
 
 const styles = StyleSheet.create({
     header: {
-        height: 170,
+        height: 150,
         width: '100%',
         padding: 40,
         backgroundColor:'#EAABFA',
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function HomeScreen() {
+export default function HomeScreen( { navigation }) {
     
     return (
         <View style={styles.container}>
@@ -64,6 +64,9 @@ export default function HomeScreen() {
                 </SafeAreaView>
                 
             </ScrollView>
+            {/* <Text
+                onPress={() => navigation.navigate('Home')}
+                style={{ fontSize: 26, fontWeight: 'bold' }}>Home Screen</Text> */}
         </View>
     );
 }
