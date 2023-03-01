@@ -11,7 +11,7 @@ const screens = {
     Signup: {
         screen: Signup
     },
-    Home: {
+    HomeScreen: {
         screen: Home
     },
 }

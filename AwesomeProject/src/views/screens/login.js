@@ -3,16 +3,27 @@ import { Alert } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-navigation";
-import Input from "../components/input";
+import Input from "../comps/input";
 import { LinearGradient } from "expo-linear-gradient"
 import actualCOLORS from "../../conts/actualColors";
 import { Keyboard } from "react-native";
 import COLORS from "../../conts/colors";
-import Button from "../components/button";
+import Button from "../comps/button";
 
 
 
 const Login = ({ navigation }) => {
+
+    const tokenlogin = async() => {
+        const value = await AsyncStorage.getItem('userData')
+        if (value !== null) {
+            navigation.navigate('HomeScreen')
+            console.log('Tu es connecté')
+        }else {
+            console.log('Tu dois te connecter')
+        }
+    }
+    
     const [inputs, setInputs] = React.useState({
         email: '',
         password: '',
@@ -48,17 +59,23 @@ const Login = ({ navigation }) => {
     }
 
     const login = () => {
-        setTimeout(() => {
-            try {
-                setLoading(false);
-                AsyncStorage.setItem('userData', JSON.stringify(inputs));
-                navigation.navigate('Home');
-            } catch (error) {
-                Alert.alert('Error', 'Something went wrong');
+        setTimeout(async () => {
+          let userData = await AsyncStorage.getItem('userData');
+          if (userData !== null) {
+            userData = JSON.parse(userData);
+            if (inputs.email == userData.email && inputs.password == userData.password) {
+              navigation.replace('HomeScreen');
+              AsyncStorage.setItem('userData', JSON.stringify({...userData, loggedIn: true}),);
+            } else {
+              Alert.alert('Error', 'Invalid Details: Check your email or password and try again');
             }
-        }, 3000)
-    }
+          } else {
+            Alert.alert('Error', 'User does not exist');
+          }
+        }, 1000);
+      };
 
+    tokenlogin()
     return (
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['rgba(212, 132, 232, 0.89)', 'rgba(113, 189, 244, 0.93)']} style={{ flex: 1 }}>
             <SafeAreaView>

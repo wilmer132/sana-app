@@ -3,12 +3,12 @@ import { Alert } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-navigation";
-import Input from "../components/input";
+import Input from "../comps/input";
 import { LinearGradient } from "expo-linear-gradient"
 import actualCOLORS from "../../conts/actualColors";
 import { Keyboard } from "react-native";
 import COLORS from "../../conts/colors";
-import Button from "../components/button";
+import Button from "../comps/button";
 
 const Signup = ({ navigation }) => {
     const [inputs, setInputs] = React.useState({
@@ -19,29 +19,39 @@ const Signup = ({ navigation }) => {
     });
     const [errors, setErrors] = React.useState({});
     const validate = () => {
+        console.log("pressed");
+
         Keyboard.dismiss();
-        const valid = true;
+        let valid = true;
         if (!inputs.email) {
             handleError('Please input email', 'email');
-            let valid = false;
+            valid = false;
         }
         else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
             handleError('Please input valid email', 'email');
+            valid = false;
         }
         if (!inputs.fullname) {
             handleError('Please input fullname', 'fullname');
+            valid = false;
         }
         if (!inputs.phone) {
             handleError('Please input phone', 'phone');
+            valid = false;
         }
         if (!inputs.password) {
             handleError('Please input password', 'password');
+            valid = false;
         }
         else if (inputs.password.length < 5) {
             handleError('Min password length of 5', 'password');
+            valid = false;
         }
+        console.log(valid);
 
         if (valid) {
+            console.log("before register");
+
             register();
         }
     };
@@ -53,16 +63,17 @@ const Signup = ({ navigation }) => {
         setErrors((prevState) => ({ ...prevState, [input]: errorMessage }))
     }
 
-    const register = () => {
+    const register = async () => {
         setTimeout(() => {
             try {
-                setLoading(false);
-                AsyncStorage.setItem('userData', JSON.stringify(inputs));
-                navigation.navigate('Login');
+                inputsJSON = JSON.stringify(inputs);
+                console.log(inputs);
+                AsyncStorage.setItem('userData', inputsJSON);
+                navigation.replace('Login');
             } catch (error) {
                 Alert.alert('Error', 'Something went wrong');
             }
-        }, 3000)
+        }, 2000)
     }
 
     return (
@@ -75,7 +86,7 @@ const Signup = ({ navigation }) => {
                         paddingBottom: 200
                     }}>
                     <Text style={{ color: COLORS.black, fontSize: 40, fontWeight: 'bold' }}>
-                        Signup
+                        Sign Up
                     </Text>
                     <Text style={{ color: COLORS.white, fontSize: 18, marginVertical: 10 }}>
                         Enter your details to signup.
@@ -95,6 +106,7 @@ const Signup = ({ navigation }) => {
                             placeholder="Enter your full name"
                             iconName="account-outline"
                             label='Full name'
+                            error={errors.fullname}
                             onFocus={() => {
                                 handleError(null, "fullname")
                             }}
@@ -105,6 +117,7 @@ const Signup = ({ navigation }) => {
                             placeholder="Enter your phone number"
                             iconName="phone-outline"
                             label='Phone number'
+                            error={errors.phone}
                             onFocus={() => {
                                 handleError(null, "phone")
                             }}
@@ -114,6 +127,7 @@ const Signup = ({ navigation }) => {
                             placeholder="Enter a password"
                             iconName="lock-outline"
                             label='Password'
+                            error={errors.password}
                             onFocus={() => {
                                 handleError(null, "password")
                             }}
