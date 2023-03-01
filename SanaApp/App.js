@@ -6,15 +6,19 @@ import HomeScreen from './components/HomeScreen/HomeScreen.js';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      {/*TODO: Views must be conditional on user input.
-         For now, comment out `RecordMood` or other
-         component present and add yours for testing. */}
-      {/* <HomeScreen /> */}
-      <RecordMood />
-      <NavBar /> 
-    </View>
+    <NavBar/>
+
+    // uncomment the things below to test individually (lines 14-21) and comment out line 9 
+    // -- might also want to comment out line 3
+
+    // <View style={styles.container}>
+    //   <StatusBar style="auto" />
+    //   {/*TODO: Views must be conditional on user input.
+    //      For now, comment out `RecordMood` or other
+    //      component present and add yours for testing. */}
+    //   {/* <HomeScreen /> */}
+    //   <RecordMood />
+    // </View>
   );
 }
 
