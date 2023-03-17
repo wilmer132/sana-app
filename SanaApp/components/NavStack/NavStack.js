@@ -6,6 +6,7 @@ import HomeScreen from '../HomeScreen/HomeScreen.js';
 import Login from '../AuthScreens/Login';
 import Signup from '../AuthScreens/Signup.js';
 import RecordMood from '../RecordMood/RecordMood';
+import Settings from '../SettingsScreen/Settings';
 import test from '../AuthScreens/testscreen.js';
 
 const Stack = createNativeStackNavigator();
@@ -13,6 +14,7 @@ const Tab = createBottomTabNavigator();
 
 const homeName = 'homeName';
 const recordMoodName = 'Record Mood';
+const settingsName = 'Settings';
 
 const Home = () => {
     return(
@@ -28,6 +30,10 @@ const Home = () => {
 
         } else if (rn === recordMoodName) {
           iconName = focused ? 'record mood' : 'record-mood-outline';
+        }
+          else if (rn == settingsName) {
+            iconName = focused ? 'settings' : 'settings-outline';
+          
 
         } 
         // add more conditionals for other screens here
@@ -45,6 +51,7 @@ const Home = () => {
 
     <Tab.Screen name={homeName} component={HomeScreen} />
     <Tab.Screen name={recordMoodName} component={RecordMood} />
+    <Tab.Screen name={settingsName} component={Settings} />
     {/* Add more navigation icons here */}
 
   </Tab.Navigator>
