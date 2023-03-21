@@ -1,20 +1,19 @@
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Alert } from "react-native";
+import { Alert, Modal, Text, Pressable, View, StyleSheet, ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import Input from "../AuthComps/Input";
 import { LinearGradient } from "expo-linear-gradient"
-// import actualCOLORS from "../../conts/actualColors";
+import actualCOLORS from "../AuthComps/actualColors";
 import { Keyboard } from "react-native";
 import COLORS from "../AuthComps/colors";
 import Button from "../AuthComps/Button";
 
 const Settings = ({ navigation }) => {
     const settingsOptions = [
-        { title: "My Info", subTitle: "Setup your profile" },
-        { title: "Log Out", onPress: () => {Logout()} }
+        { title: "My Info", subTitle: "Email, Full name, Phone number, ...", onPress: () => { setShowMyInfoModal(true) } },
+        { title: "Log Out", onPress: () => { Logout() } }
     ];
 
     const Logout = () => {
@@ -28,10 +27,50 @@ const Settings = ({ navigation }) => {
             navigation.replace('Login');
         }, 1000);
     }
+    
+    [userEmail, setUserEmail] = useState('');
+    [userFullname, setUserFullname] = useState('');
+    [userPhone, setUserPhone] = useState('');
+        const _GetInfo = async () => {
+            let userData = await AsyncStorage.getItem('userData');
+            userData = JSON.parse(userData);
+            setUserEmail(userData.email)
+            setUserFullname(userData.fullname)
+            setUserPhone(userData.phone)
+        }
+    _GetInfo();
 
+
+
+    const [showMyInfoModal, setShowMyInfoModal] = useState(false);
 
     return (
         <ScrollView style={{ backgroundColor: COLORS.white }}>
+            {/* Modal for my info */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showMyInfoModal}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setShowMyInfoModal(!showMyInfoModal);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Email: {userEmail}</Text>
+                        <Text style={styles.modalText}>Fullname: {userFullname}</Text>
+                        <Text style={styles.modalText}>Phone: {userPhone}</Text>
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => setShowMyInfoModal(!showMyInfoModal)
+                            }>
+                            <Text style={styles.textStyle}>Close</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+            {/* End of my Info Modal */}
+
             {settingsOptions.map(({ title, subTitle, onPress }, index) => (
                 <TouchableOpacity key={title} onPress={onPress}>
                     <View
@@ -40,18 +79,74 @@ const Settings = ({ navigation }) => {
                             paddingBottom: 20,
                             paddingTop: 20,
                         }}>
-                        <Text style={{ fontSize: 17 }}>{title}</Text>
+                        <Text style={styles.TitleStyle}>{title}</Text>
                         {subTitle && (
-                            <Text style={{ fontSize: 14, opacity: 0.5, paddingTop: 5 }}>
+                            <Text style={styles.SubtitleSytle}>
                                 {subTitle}
                             </Text>
                         )}
                     </View>
 
-                    <View style={{ height: 0.5, backgroundColor: COLORS.grey }} />
+                    <View style={styles.LineBetweenStyle} />
                 </TouchableOpacity>
             ))}
         </ScrollView>
     )
 }
+const styles = StyleSheet.create({
+    TitleStyle: {
+        fontSize: 17
+    },
+    SubtitleSytle: {
+        fontSize: 14,
+        opacity: 0.5,
+        paddingTop: 5
+    },
+    LineBetweenStyle: {
+        height: 0.5,
+        backgroundColor: COLORS.grey
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+    },
+    buttonOpen: {
+        backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+        backgroundColor: actualCOLORS.gradientPink,
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+})
+
 export default Settings;
