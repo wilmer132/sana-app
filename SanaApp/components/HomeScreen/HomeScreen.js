@@ -76,9 +76,6 @@ export default function HomeScreen( { navigation }) {
                 </SafeAreaView>
                 
             </ScrollView>
-            {/* <Text
-                onPress={() => navigation.navigate('Home')}
-                style={{ fontSize: 26, fontWeight: 'bold' }}>Home Screen</Text> */}
         </View>
     );
 }
