@@ -12,7 +12,7 @@ import Button from "../AuthComps/Button";
 
 const Settings = ({ navigation }) => {
     const settingsOptions = [
-        { title: "My Info", subTitle: "Email, Full name, Phone number, ...", onPress: () => { setShowMyInfoModal(true) } },
+        { title: "My Info", subTitle: "Email, Full name, Phone number", onPress: () => { setShowMyInfoModal(true) } },
         { title: "Log Out", onPress: () => { Logout() } }
     ];
 
@@ -21,7 +21,10 @@ const Settings = ({ navigation }) => {
         setTimeout(async () => {
             let userData = await AsyncStorage.getItem('userData');
             userData = JSON.parse(userData);
-            AsyncStorage.removeItem('userData', (err, result) => {
+            userData.loggedIn = false;
+            console.log(userData);
+            // userData[loggedIn] = false;
+            AsyncStorage.setItem('userDate', JSON.stringify({...userData}), (err, result) => {
                 console.log(result);
             });
             navigation.replace('Login');
@@ -40,9 +43,32 @@ const Settings = ({ navigation }) => {
         }
     _GetInfo();
 
+    const [inputs, setInputs] = React.useState({
+        name: '',
+        email: '',
+        phone: '',
+    });
 
+    const handleOnChange = (text, input) => {
+        setInputs((prevState) => ({ ...prevState, [input]: text }))
+    };
+
+    const saveNewInfo = () => {
+        setTimeout(() => {
+            try {
+                inputsJSON = JSON.stringify(inputs);
+                console.log(inputs);
+                AsyncStorage.setItem('userData', inputsJSON);
+                navigation.replace('Login');
+            } catch (error) {
+                Alert.alert('Error', 'Something went wrong, could not save new user info. Please try again');
+            }
+        }, 1000)
+        setUpdateInfoModal(!showUpdateInfoModal);
+    }
 
     const [showMyInfoModal, setShowMyInfoModal] = useState(false);
+    const [showUpdateInfoModal, setUpdateInfoModal] = useState(false);
 
     return (
         <ScrollView style={{ backgroundColor: COLORS.white }}>
@@ -52,7 +78,7 @@ const Settings = ({ navigation }) => {
                 transparent={true}
                 visible={showMyInfoModal}
                 onRequestClose={() => {
-                    Alert.alert('Modal has been closed.');
+                    Alert.alert('show info modal has been closed.');
                     setShowMyInfoModal(!showMyInfoModal);
                 }}>
                 <View style={styles.centeredView}>
@@ -66,10 +92,64 @@ const Settings = ({ navigation }) => {
                             }>
                             <Text style={styles.textStyle}>Close</Text>
                         </Pressable>
+                        <Text style={styles.updateInfo} onPress={() => {setShowMyInfoModal(!showMyInfoModal); setUpdateInfoModal(true); } }>Update my info</Text>
                     </View>
                 </View>
             </Modal>
             {/* End of my Info Modal */}
+
+            {/* Modal for updating info */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showUpdateInfoModal}
+                onRequestClose={() => {
+                    Alert.alert('update info modal has been closed.');
+                    setUpdateInfoModal(!showUpdateInfoModal);
+                }}>
+                    <View style={styles.centeredInfoView}>
+                            <Text style={styles.TitleStyle}>Update Your Info</Text>
+                            <View>
+                                <Input
+                                    placeholder="Enter your new email"
+                                    placeholderTextColor='gray'
+                                    iconName="email-outline"
+                                    label='Email'
+                                    onChangeText={text => handleOnChange(text, "email")}
+                                />
+                                <Input
+                                    placeholder="Enter your updated name"
+                                    placeholderTextColor='gray'
+                                    iconName='account-outline'
+                                    label='Name'
+                                    onChangeText={text => handleOnChange(text, "phone")}
+                                />
+                                <Input
+                                    placeholder="Enter your new phone number"
+                                    placeholderTextColor='gray'
+                                    iconName="phone-outline"
+                                    label='Phone'
+                                    onChangeText={text => handleOnChange(text, "phone")}
+                                />
+                                <Pressable
+                                    style={[styles.button, styles.buttonClose]}
+                                    onPress={saveNewInfo}>
+                                    <Text style={styles.textStyle}>Save</Text>
+                                </Pressable>
+                                <Text 
+                                    style={{ 
+                                        color: actualCOLORS.gradientPink,
+                                        fontWeight: "bold",
+                                        padding: 10,
+                                        textAlign: "center"}
+                                    }
+                                    onPress={() => setUpdateInfoModal(!showUpdateInfoModal)}>
+                                    Close
+                                </Text>
+                            </View>
+                    </View>
+            </Modal>
+            {/* End of update info modal */}
 
             {settingsOptions.map(({ title, subTitle, onPress }, index) => (
                 <TouchableOpacity key={title} onPress={onPress}>
@@ -112,12 +192,31 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 22,
     },
+    centeredInfoView: {
+        flex: 1,
+        justifyContent: 'center',
+        margin: 40
+    },
     modalView: {
         margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    updateInfoModalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 100,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -138,6 +237,12 @@ const styles = StyleSheet.create({
     buttonClose: {
         backgroundColor: actualCOLORS.gradientPink,
     },
+    updateInfo: {
+        fontWeight: "bold",
+        paddingTop: 20,
+        color: actualCOLORS.gradientPink,
+        textDecorationLine: "underline"
+    },
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
@@ -147,6 +252,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    inputStyle :{
+        paddingHorizontal: 80,
+        // width: 100
+    }
 })
 
 export default Settings;

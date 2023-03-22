@@ -24,8 +24,9 @@ import Button from "../AuthComps/Button";;
 const Login = ({ navigation }) => {
 
     const tokenlogin = async() => {
-        const value = await AsyncStorage.getItem('userData')
-        if (value !== null) {
+        let value = await AsyncStorage.getItem('userData')
+        value = JSON.parse(value);
+        if (value !== null && value.loggedIn === false) {
             navigation.navigate('HomeScreen')
             console.log('connected')
         }else {
