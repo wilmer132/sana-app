@@ -44,7 +44,7 @@ export default function NavBar() {
             } 
             // add more conditionals for other screens here
 
-            // You can return any component that you like here!
+            // You can return any component that you like here! (will add in future when adding icons)
             // return <Ionicons name={iconName} size={size} color={color} />;
           },
         })}
