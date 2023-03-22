@@ -1,4 +1,16 @@
 import { StyleSheet, ScrollView, SafeAreaView, Button, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const _GetInfo = async () => {
+    let userData = await AsyncStorage.getItem('userData');
+    userData = JSON.parse(userData);
+    console.log("on home screen")
+    console.log(userData);
+    if (!userData.loggedIn) {
+        navigation.replace('Login');
+    }
+}
+_GetInfo();
 
 const styles = StyleSheet.create({
     header: {
