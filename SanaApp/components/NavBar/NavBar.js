@@ -9,10 +9,14 @@ import Ionicons from 'react-native-ionicons'
 // screens
 import RecordMood from '../RecordMood/RecordMood';
 import HomeScreen from '../HomeScreen/HomeScreen';
+import Create from '../Journal/Create';
+import SubmittedEntry from '../Journal/SubmittedEntry';
 
 // screen names
 const homeName = 'Home';
 const recordMoodName = 'Record Mood';
+const createName = 'Create';
+const myJournalName = 'My Journal';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,6 +45,11 @@ export default function NavBar() {
             } else if (rn === recordMoodName) {
               iconName = focused ? 'record mood' : 'record-mood-outline';
 
+            } else if (rn === createName) {
+              iconName = focused ? 'create' : 'create-outline';
+            
+            } else if (rn === myJournalName) {
+              iconName = focused ? 'my journal' : 'my-journal-outline';
             } 
             // add more conditionals for other screens here
 
@@ -57,6 +66,8 @@ export default function NavBar() {
 
         <Tab.Screen name={homeName} component={HomeScreen} />
         <Tab.Screen name={recordMoodName} component={RecordMood} />
+        <Tab.Screen name={createName} component={Create} />
+        <Tab.Screen name={myJournalName} component={MyJournal} />
         {/* Add more navigation icons here */}
 
       </Tab.Navigator>
