@@ -6,6 +6,8 @@ import HomeScreen from '../HomeScreen/HomeScreen.js';
 import Login from '../AuthScreens/Login';
 import Signup from '../AuthScreens/Signup.js';
 import RecordMood from '../RecordMood/RecordMood';
+import Create from '../Journal/Create';
+import SubmittedEntry from '../Journal/SubmittedEntry.js';
 import Settings from '../SettingsScreen/Settings';
 import test from '../AuthScreens/testscreen.js';
 
@@ -14,6 +16,8 @@ const Tab = createBottomTabNavigator();
 
 const homeName = 'homeName';
 const recordMoodName = 'Record Mood';
+const createName = 'Create';
+const myJournalName = 'My Journal';
 const settingsName = 'Settings';
 
 const Home = () => {
@@ -30,6 +34,12 @@ const Home = () => {
 
         } else if (rn === recordMoodName) {
           iconName = focused ? 'record mood' : 'record-mood-outline';
+        } 
+          else if (rn === myJournalName) {
+            iconName = focused ? 'my journal' : 'my-journal-outline';
+        }
+        else if (rn === createName) {
+          iconName = focused ? 'create' : 'create-outline';
         }
           else if (rn == settingsName) {
             iconName = focused ? 'settings' : 'settings-outline';
@@ -51,6 +61,8 @@ const Home = () => {
 
     <Tab.Screen name={homeName} component={HomeScreen} />
     <Tab.Screen name={recordMoodName} component={RecordMood} />
+    <Tab.Screen name={createName} component={Create} />
+    <Tab.Screen name={myJournalName} component={SubmittedEntry} />
     <Tab.Screen name={settingsName} component={Settings} />
     {/* Add more navigation icons here */}
 
